@@ -1,4 +1,3 @@
-public final class app/revanced/patches/example/ExamplePatchKt {
-	public static final fun getExamplePatch ()Lapp/revanced/patcher/patch/BytecodePatch;
+public final class app/revanced/patches/hitster/customendpoint/CustomEndpointPatchKt {
+	public static final fun getCustomEndpointPatch ()Lapp/revanced/patcher/patch/BytecodePatch;
 }
-

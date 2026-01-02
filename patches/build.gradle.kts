@@ -1,13 +1,13 @@
-group = "app.revanced"
+group = "app.snupai"
 
 patches {
     about {
-        name = "ReVanced Patches template"
-        description = "Patches template for ReVanced"
-        source = "git@github.com:revanced/revanced-patches-template.git"
-        author = "ReVanced"
-        contact = "contact@revanced.app"
-        website = "https://revanced.app"
+        name = "ReVanced HITSTER Database Patch"
+        description = "Patches for HITSTER app to use custom gameset_database.json endpoint"
+        source = "git@github.com:Snupai/revanced-hitster-db-patch.git"
+        author = "Snupai"
+        contact = "nya@snupai.me"
+        website = "https://snupai.me"
         license = "GNU General Public License v3.0"
     }
 }
