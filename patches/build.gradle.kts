@@ -1,5 +1,11 @@
 group = "app.snupai"
 
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions {
+        freeCompilerArgs = freeCompilerArgs + "-Xcontext-receivers"
+    }
+}
+
 patches {
     about {
         name = "ReVanced HITSTER Database Patch"
