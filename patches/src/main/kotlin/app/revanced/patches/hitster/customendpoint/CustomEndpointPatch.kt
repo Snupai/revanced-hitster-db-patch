@@ -1,40 +1,36 @@
 package app.revanced.patches.hitster.customendpoint
 
-import app.revanced.patcher.data.BytecodeContext
+import app.revanced.patcher.patch.bytecodePatch
 import app.revanced.patcher.extensions.InstructionExtensions.replaceInstruction
-import app.revanced.patcher.patch.BytecodePatch
 import app.revanced.patcher.patch.PatchException
-import app.revanced.patcher.patch.annotations.Patch
-import app.revanced.patcher.patch.annotations.Option
 import app.revanced.patches.hitster.customendpoint.fingerprints.BaseUrlFingerprint
-import com.android.tools.smali.dexlib2.iface.instruction.OneRegisterInstruction
-import com.android.tools.smali.dexlib2.iface.instruction.formats.ConstStringInstruction
+import org.jf.dexlib2.iface.instruction.OneRegisterInstruction
+import org.jf.dexlib2.iface.instruction.formats.ConstStringInstruction
 
-@Patch(
+@Suppress("unused")
+val customEndpointPatch = bytecodePatch(
     name = "Custom gameset database endpoint",
     description = "Allows setting a custom endpoint URL for gameset_database.json and other config files.",
-    compatiblePackages = [
-        app.revanced.patcher.patch.Patch.CompatiblePackage(
-            "nl.jumbo.hitster",
-            arrayOf("3.1.3")
-        )
-    ]
-)
-object CustomEndpointPatch : BytecodePatch(
-    setOf(BaseUrlFingerprint)
 ) {
-    @Option(
+    compatibleWith("nl.jumbo.hitster"("3.1.3"))
+
+    requires(BaseUrlFingerprint)
+
+    option(
         key = "custom-endpoint-url",
         title = "Custom endpoint URL",
         description = "The base URL for gameset_database.json and other config files. Must end with a forward slash (/).",
         default = "https://hitster.jumboplay.com/hitster-assets/"
     )
-    var customEndpointUrl: String = "https://hitster.jumboplay.com/hitster-assets/"
 
-    override fun execute(context: BytecodeContext) {
+    execute {
+        val customUrl = options["custom-endpoint-url"] as? String
+            ?: "https://hitster.jumboplay.com/hitster-assets/"
+
         // Validate URL ends with /
-        if (!customEndpointUrl.endsWith("/")) {
-            throw PatchException("Custom endpoint URL must end with a forward slash (/)")
+        if (!customUrl.endsWith("/")) {
+            logger.e("Custom endpoint URL must end with a forward slash (/)")
+            return@execute
         }
 
         val result = BaseUrlFingerprint.result
@@ -68,10 +64,7 @@ object CustomEndpointPatch : BytecodePatch(
         // Replace the string constant with our custom URL
         method.replaceInstruction(
             foundIndex,
-            "const-string v$targetRegister, \"$customEndpointUrl\""
+            "const-string v$targetRegister, \"$customUrl\""
         )
     }
 }
-
-@Suppress("unused")
-val customEndpointPatch = CustomEndpointPatch
