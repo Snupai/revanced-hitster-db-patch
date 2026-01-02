@@ -10,7 +10,7 @@ object BaseUrlFingerprint : MethodFingerprint(
     customFingerprint = { methodDef, _ ->
         methodDef.implementation?.instructions?.any { instruction ->
             instruction is ConstStringInstruction &&
-            instruction.string == "https://hitster.jumboplay.com/hitster-assets/"
+            (instruction as ConstStringInstruction).string == "https://hitster.jumboplay.com/hitster-assets/"
         } == true
     }
 )
