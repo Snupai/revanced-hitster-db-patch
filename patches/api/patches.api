@@ -1,3 +1,4 @@
 public final class app/revanced/patches/hitster/customendpoint/CustomEndpointPatchKt {
 	public static final fun getCustomEndpointPatch ()Lapp/revanced/patcher/patch/BytecodePatch;
 }
+
