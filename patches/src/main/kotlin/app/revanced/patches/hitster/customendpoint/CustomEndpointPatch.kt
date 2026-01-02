@@ -4,35 +4,17 @@ import app.revanced.patcher.patch.bytecodePatch
 import app.revanced.patcher.extensions.InstructionExtensions.replaceInstruction
 import app.revanced.patcher.patch.PatchException
 import app.revanced.patches.hitster.customendpoint.fingerprints.BaseUrlFingerprint
-import org.jf.dexlib2.iface.instruction.OneRegisterInstruction
-import org.jf.dexlib2.iface.instruction.formats.ConstStringInstruction
+import com.android.tools.smali.dexlib2.iface.instruction.OneRegisterInstruction
+import com.android.tools.smali.dexlib2.iface.instruction.formats.ConstStringInstruction
 
 @Suppress("unused")
 val customEndpointPatch = bytecodePatch(
     name = "Custom gameset database endpoint",
     description = "Allows setting a custom endpoint URL for gameset_database.json and other config files.",
+    compatiblePackages = ["nl.jumbo.hitster"],
+    use = true
 ) {
-    compatibleWith("nl.jumbo.hitster"("3.1.3"))
-
-    requires(BaseUrlFingerprint)
-
-    option(
-        key = "custom-endpoint-url",
-        title = "Custom endpoint URL",
-        description = "The base URL for gameset_database.json and other config files. Must end with a forward slash (/).",
-        default = "https://hitster.jumboplay.com/hitster-assets/"
-    )
-
     execute {
-        val customUrl = options["custom-endpoint-url"] as? String
-            ?: "https://hitster.jumboplay.com/hitster-assets/"
-
-        // Validate URL ends with /
-        if (!customUrl.endsWith("/")) {
-            logger.e("Custom endpoint URL must end with a forward slash (/)")
-            return@execute
-        }
-
         val result = BaseUrlFingerprint.result
             ?: throw PatchException("BaseUrlFingerprint not found")
 
@@ -60,6 +42,9 @@ val customEndpointPatch = bytecodePatch(
         if (foundIndex == -1) {
             throw PatchException("Could not find base URL string constant")
         }
+
+        // For now, use default URL - we'll add option support later
+        val customUrl = "https://hitster.jumboplay.com/hitster-assets/"
 
         // Replace the string constant with our custom URL
         method.replaceInstruction(
