@@ -1,3 +1,5 @@
+## [1.0.1](https://github.com/Snupai/revanced-hitster-db-patch/compare/v1.0.0...v1.0.1) (2026-01-05)
+
 # 1.0.0 (2026-01-05)
 
 ## [1.0.4](https://github.com/ReVanced/revanced-patches-template/compare/v1.0.3...v1.0.4) (2024-11-05)
