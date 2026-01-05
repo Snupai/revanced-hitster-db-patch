@@ -21,7 +21,7 @@ internal val customEndpointUrlOption = stringOption(
     required = true,
 ) {
     // Validate that the URL ends with a forward slash
-    if (!it.endsWith("/")) {
+    if (it != null && !it.endsWith("/")) {
         throw IllegalArgumentException("URL must end with a forward slash (/)")
     }
     true
