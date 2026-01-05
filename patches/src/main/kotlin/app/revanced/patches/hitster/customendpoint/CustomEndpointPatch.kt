@@ -4,7 +4,7 @@ import app.revanced.patcher.fingerprint
 import app.revanced.patcher.patch.bytecodePatch
 import app.revanced.patcher.extensions.InstructionExtensions.replaceInstruction
 import app.revanced.patcher.patch.PatchException
-import app.revanced.patcher.patch.annotations.Option
+import app.revanced.patcher.patch.options.StringOption
 import com.android.tools.smali.dexlib2.iface.instruction.OneRegisterInstruction
 import com.android.tools.smali.dexlib2.iface.instruction.formats.Instruction21c
 import com.android.tools.smali.dexlib2.iface.reference.StringReference
@@ -14,13 +14,12 @@ internal val baseUrlFingerprint = fingerprint {
 }
 
 object CustomEndpointOptions {
-    @Option(
+    val customEndpointUrl = StringOption(
         key = "custom-endpoint-url",
         title = "Custom endpoint URL",
         description = "The base URL for gameset_database.json and other config files. Must end with a forward slash (/).",
         default = "https://hitster.jumboplay.com/hitster-assets/"
     )
-    var customEndpointUrl: String = "https://hitster.jumboplay.com/hitster-assets/"
 }
 
 @Suppress("unused")
@@ -55,7 +54,7 @@ val customEndpointPatch = bytecodePatch(
         }
 
         // Use the option value for the custom URL
-        val customUrl = CustomEndpointOptions.customEndpointUrl
+        val customUrl = CustomEndpointOptions.customEndpointUrl.get()
 
         // Replace the string constant with our custom URL
         method.replaceInstruction(
