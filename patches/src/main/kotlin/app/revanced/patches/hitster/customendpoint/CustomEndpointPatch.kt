@@ -4,7 +4,7 @@ import app.revanced.patcher.fingerprint
 import app.revanced.patcher.patch.bytecodePatch
 import app.revanced.patcher.extensions.InstructionExtensions.replaceInstruction
 import app.revanced.patcher.patch.PatchException
-import app.revanced.patcher.patch.options.StringOption
+import app.revanced.patcher.patch.stringOption
 import com.android.tools.smali.dexlib2.iface.instruction.OneRegisterInstruction
 import com.android.tools.smali.dexlib2.iface.instruction.formats.Instruction21c
 import com.android.tools.smali.dexlib2.iface.reference.StringReference
@@ -13,13 +13,18 @@ internal val baseUrlFingerprint = fingerprint {
     strings("https://hitster.jumboplay.com/hitster-assets/")
 }
 
-object CustomEndpointOptions {
-    val customEndpointUrl = StringOption(
-        key = "custom-endpoint-url",
-        title = "Custom endpoint URL",
-        description = "The base URL for gameset_database.json and other config files. Must end with a forward slash (/).",
-        default = "https://hitster.jumboplay.com/hitster-assets/"
-    )
+internal val customEndpointUrlOption = stringOption(
+    key = "custom-endpoint-url",
+    default = "https://hitster.jumboplay.com/hitster-assets/",
+    title = "Custom endpoint URL",
+    description = "The base URL for gameset_database.json and other config files. Must end with a forward slash (/).",
+    required = true,
+) {
+    // Validate that the URL ends with a forward slash
+    if (!it.endsWith("/")) {
+        throw IllegalArgumentException("URL must end with a forward slash (/)")
+    }
+    true
 }
 
 @Suppress("unused")
@@ -29,6 +34,8 @@ val customEndpointPatch = bytecodePatch(
     use = true
 ) {
     compatibleWith("nl.jumbo.hitster")
+
+    val customEndpointUrl by customEndpointUrlOption()
 
     execute {
         val method = baseUrlFingerprint.method
@@ -54,7 +61,7 @@ val customEndpointPatch = bytecodePatch(
         }
 
         // Use the option value for the custom URL
-        val customUrl = CustomEndpointOptions.customEndpointUrl.get()
+        val customUrl = customEndpointUrl!!
 
         // Replace the string constant with our custom URL
         method.replaceInstruction(
